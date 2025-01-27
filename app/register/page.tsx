@@ -102,8 +102,8 @@ const Register = () => {
             </Link>
           </p>
         </div>
-        <button type="submit" className="text-white bg-yellow-600 hover:bg-yellow-600/90 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">
-          Register Account
+        <button type="submit" className="text-white bg-yellow-600 hover:bg-yellow-600/90 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center" disabled={isSubmitting}>
+          {isSubmitting ? "Registring..." : "Register Account"}
         </button>
       </form>
     </div>

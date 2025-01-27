@@ -5,11 +5,18 @@ import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import { FiCalendar, FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { useBooking } from "../context/BookingContext";
+import axiosInstance from "@/api/axiosInstance";
+import { useRouter } from "next/navigation";
 
 const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 
 const DatePicker: React.FC = () => {
+  const router = useRouter();
+  const { location_id, setBookingData } = useBooking();
+  const [isLoading, setIsLoading] = useState(false);
   const [date, setDate] = useState<Date | null>(null);
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   const timeSlots = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
@@ -18,13 +25,34 @@ const DatePicker: React.FC = () => {
     setDate(new Date());
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setIsLoadingButton(true);
     if (!date || !selectedTime) {
       alert("Please select a date and time.");
       return;
     }
-    alert(`Appointment set for ${date.toLocaleDateString("id-ID")} at ${selectedTime}`);
-    redirect('/therapist');
+
+    const requestData = {
+      location_id: location_id,
+      date: date.toISOString().split('T')[0],
+      time: selectedTime
+    };
+    console.log(requestData);
+  
+    try {
+      const response = await axiosInstance.post('/appointments/check-slots', requestData);
+  
+      if (response.data.data == true) {
+        setBookingData({ date: date.toISOString().split('T')[0], time: selectedTime });
+        router.push('/therapist');
+      } else {
+        alert(response.data.message || "Time slot is not available");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingButton(false);
+    }
   };
 
   return (
@@ -63,7 +91,7 @@ const DatePicker: React.FC = () => {
               <FiChevronLeft />
               Back
             </Link>
-            <button onClick={handleSubmit} className="flex items-center bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-600/70">
+            <button onClick={handleSubmit} className="flex items-center bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-600/70" disabled={isLoadingButton}>
               Select
               <FiChevronRight />
             </button>
