@@ -10,6 +10,7 @@ const BookingContext = createContext<BookingContextProps | undefined>(undefined)
 
 const BookingProvider = ({ children }: { children: ReactNode }) => {
   const [bookingData, setBookingDataState] = useState<BookingRequest>({
+    id: 0,
     location_id: 0,
     name: "-",
     email: "-",

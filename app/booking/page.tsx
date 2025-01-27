@@ -1,9 +1,31 @@
 "use client";
 import Link from "next/link";
-import { useBooking } from "../context/BookingContext";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "@/api/axiosInstance";
+import { useBooking } from "@/app/context/BookingContext";
 
 const Customer = () => {
-  const { location_id, name, phone, email, details, date, time } = useBooking();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
+  const [bookingData, setBookingData] = useState<BookingResponse>();
+  const { id } = useBooking();
+
+  useEffect(() => {
+    const fetchBooking = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axiosInstance.get("/appointments/" + id);
+        setBookingData(response.data?.data);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBooking();
+  }, []);
+
   return (
     <>
       <div className="text-center mt-5 mb-10">
@@ -18,39 +40,43 @@ const Customer = () => {
         <div className="p-4 border rounded-lg mb-5">
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Customer</span>
-            <span className="font-semibold">{name}</span>
+            <span className="font-semibold">{bookingData?.name}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Location</span>
-            <span className="font-semibold">{location_id}</span>
+            <span className="font-semibold">{bookingData?.location.name}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Phone No</span>
-            <span className="font-semibold">{phone}</span>
+            <span className="font-semibold">{bookingData?.phone}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Treatment</span>
             <div className="flex flex-col">
-              {details.map(detail => (
-                <span className="font-semibold">{detail.treatment_id} (Category A)</span>
+              {bookingData?.details.map((detail) => (
+                <span className="font-semibold">
+                  {detail.treatment_name} ({detail.treatment_category})
+                </span>
               ))}
             </div>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Therapist</span>
             <div className="flex flex-col">
-              {details.map(detail => (
-                <span className="font-semibold">{detail.therapist_id} (Category A)</span>
+              {bookingData?.details.map((detail) => (
+                <span className="font-semibold">
+                  {detail.therapist_name} ({detail.treatment_category})
+                </span>
               ))}
             </div>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Date</span>
-            <span className="font-semibold">{date}</span>
+            <span className="font-semibold">{bookingData?.date}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-600">Time</span>
-            <span className="font-semibold">{time}</span>
+            <span className="font-semibold">{bookingData?.time}</span>
           </div>
         </div>
 
@@ -58,27 +84,32 @@ const Customer = () => {
 
         <div className="border p-4 rounded-lg mb-5">
           <div className="flex flex-col gap-2 mb-2">
-            {details.map((detail) => (
+            {bookingData?.details.map((detail) => (
               <div className="flex justify-between">
-                <span className="text-gray-600">{detail.treatment_id} (Category 1)</span>
-                <span className="font-semibold">IDR 120.000</span>
+                <span className="text-gray-600">
+                  {detail.treatment_name} ({detail.treatment_category})
+                </span>
+                <span className="font-semibold">IDR {detail.treatment_price}</span>
               </div>
             ))}
           </div>
           <div className="flex justify-between mb-2">
-            <span className="text-gray-600">Service</span>
-            <span className="font-semibold">IDR 80.000</span>
+            {bookingData?.details.map((detail) => (
+              <div>
+                <span className="text-gray-600">{detail.therapist_name}</span>
+                <span className="font-semibold">IDR {detail.therapist_price}</span>
+              </div>
+            ))}
           </div>
           <hr className="my-2" />
           <div className="flex justify-between">
             <span className="font-bold">Total</span>
-            <span className="font-bold text-yellow-600">Rp. 270.000</span>
+            <span className="font-bold text-yellow-600">Rp. {bookingData?.total_price}</span>
           </div>
         </div>
 
-        <button className="w-full bg-yellow-600 text-white py-2 rounded-lg font-semibold">Submit</button>
         <Link href="/" className="w-full flex justify-center bg-white text-yellow-600 border border-yellow-600 transition-all hover:bg-yellow-600 hover:text-white mt-3 py-2 rounded-lg font-semibold">
-          Cancel Booking
+          Back to Home
         </Link>
       </div>
     </>

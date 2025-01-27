@@ -14,7 +14,6 @@ const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
 const DatePicker: React.FC = () => {
   const router = useRouter();
   const { location_id, setBookingData } = useBooking();
-  const [isLoading, setIsLoading] = useState(false);
   const [date, setDate] = useState<Date | null>(null);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);

@@ -4,15 +4,19 @@ import { useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useBooking } from "../context/BookingContext";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import axiosInstance from "@/api/axiosInstance";
 
 const Customer = () => {
+  const router = useRouter();
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
     phone: "",
   });
-  const { setBookingData } = useBooking();
+  const { location_id, details, date, time, setBookingData } = useBooking();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -22,7 +26,7 @@ const Customer = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { name, email, phone } = customerData;
 
@@ -31,12 +35,32 @@ const Customer = () => {
       return;
     }
 
-    setBookingData({ name: name, email: email, phone: phone });
+    setBookingData({ name: name, email: email, phone: phone});
+    
+    try {
+      setIsSubmitting(true);
+      const response = await axiosInstance.post("/appointments/save-booking", {
+        location_id,
+        name,
+        email,
+        phone,
+        details,
+        date,
+        time
+      });
 
-    console.log("Customer Data Submitted:", customerData);
-    alert("Customer data submitted successfully!");
+      console.log("API Response:", response.data);
+      alert("Booking appointment success!");
 
-    redirect("/booking");
+      setBookingData({ id: response.data.data.id });
+      
+      router.push('/booking');
+    } catch (error: any) {
+      console.error("Error during save booking:", error);
+      alert(error.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -92,7 +116,7 @@ const Customer = () => {
                 Back
               </Link>
               <button type="submit" className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg">
-                Select
+                Submit Booking
                 <FiChevronRight />
               </button>
             </div>
