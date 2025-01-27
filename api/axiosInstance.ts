@@ -1,8 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL + '/api/',
   timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 axiosInstance.interceptors.request.use(
@@ -28,7 +31,6 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       console.error('Unauthorized! Redirecting to login...');
-      // Handle redirect or token refresh logic here
     }
     return Promise.reject(error);
   }
