@@ -1,4 +1,5 @@
 "use client";
+import { BiArrowBack } from "react-icons/bi";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,7 +14,7 @@ const Therapist = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTherapists, setSelectedTherapists] = useState<{ [key: number]: number }>({});
   const [therapistsByTreatment, setTherapistsByTreatment] = useState<{ [key: number]: any[] }>({});
-  const { details } = useBooking();
+  const { details, addDetail } = useBooking();
 
   const handleSelectTherapist = (treatmentId: number, therapistId: number) => {
     setSelectedTherapists((prev) => ({
@@ -42,14 +43,13 @@ const Therapist = () => {
         setIsLoading(true);
 
         if (details && details.length > 0) {
-          const fetchedTherapists: { [key: number]: any[] } = {};
+          const fetchedTherapists: { [key: string]: any[] } = {};
 
           for (const detail of details) {
             const treatmentId = detail.treatment_id;
 
-            console.log(treatmentId);
             const response = await axiosInstance.get(`/therapists/${treatmentId}`);
-            fetchedTherapists[treatmentId] = response.data?.data?.therapists || [];
+            fetchedTherapists[response.data?.data.therapist[0].id] = response.data?.data?.therapist[0].therapist || [];
           }
 
           setTherapistsByTreatment(fetchedTherapists);
@@ -62,7 +62,6 @@ const Therapist = () => {
         setIsLoading(false);
       }
     };
-
     fetchTherapists();
   }, [details]);
 
@@ -77,7 +76,7 @@ const Therapist = () => {
           {details.map((detail) => (
             <div key={detail.treatment_id} className="mb-4">
               <h4 className="font-bold text-xl text-gray-800">
-                Therapist for 
+                Therapist for {detail.treatment_id}
               </h4>
               <div className="flex space-x-5 overflow-x-auto mt-3">
                 {therapistsByTreatment[detail.treatment_id]?.map((therapist) => (
@@ -86,15 +85,15 @@ const Therapist = () => {
                     className={`min-w-[300px] p-4 border rounded-lg group hover:bg-yellow-600 cursor-pointer ${selectedTherapists[detail.treatment_id] === therapist.id ? "bg-yellow-600 border-yellow-600 text-white" : "bg-gray-50"}`}
                     onClick={() => handleSelectTherapist(detail.treatment_id, therapist.id)}
                   >
-                    <Image src={therapist.image} alt="Therapist" width={100} height={100} className="rounded-lg mx-auto mb-3" />
+                    {/* <Image src={`${therapist.image ?? "http://localhost:300/default.jpg"}`} alt="Therapist" width={100} height={100} className="rounded-lg mx-auto mb-3" /> */}
                     <div className="flex justify-between">
                       <div>
                         <h5 className="font-semibold text-md text-start group-hover:text-white">{therapist.name}</h5>
-                        <p className="text-sm text-start group-hover:text-white">Fee: IDR {therapist.price.toLocaleString()}</p>
+                        <p className="text-sm text-start group-hover:text-white">Fee: IDR {therapist.price}</p>
                       </div>
 
                       <div className="bg-white rounded-md shadow-lg px-4 text-sm flex gap-2 items-center text-black">
-                        <FaStar className="text-yellow-600"/> 5.0 (87)
+                        <FaStar className="text-yellow-600"/> {therapist.rating} ({therapist.total_treatment})
                       </div>
                     </div>
                   </div>
@@ -104,6 +103,7 @@ const Therapist = () => {
           ))}
         </div>
 
+        {/* Buttons */}
         <div className="mt-5 flex justify-between">
           <Link href="/date" className="flex items-center py-2 rounded-lg text-yellow-600 hover:text-yellow-600/90">
             <FiChevronLeft />

@@ -32,6 +32,7 @@ const Location = () => {
   };
 
   useEffect(() => {
+    setBookingData({ location_id: 0 });
     const fetchLocations = async () => {
       try {
         setIsLoading(true);

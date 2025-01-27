@@ -54,7 +54,7 @@ const Customer = () => {
             <span className="text-gray-600">Treatment</span>
             <div className="flex flex-col">
               {bookingData?.details.map((detail) => (
-                <span className="font-semibold">
+                <span className="font-semibold" key={`${detail.treatment_id} - ${detail.therapist_id}`}>
                   {detail.treatment_name} ({detail.treatment_category})
                 </span>
               ))}
@@ -64,7 +64,7 @@ const Customer = () => {
             <span className="text-gray-600">Therapist</span>
             <div className="flex flex-col">
               {bookingData?.details.map((detail) => (
-                <span className="font-semibold">
+                <span className="font-semibold" key={`${detail.therapist_id} - ${detail.treatment_id}`}>
                   {detail.therapist_name} ({detail.treatment_category})
                 </span>
               ))}
@@ -85,7 +85,7 @@ const Customer = () => {
         <div className="border p-4 rounded-lg mb-5">
           <div className="flex flex-col gap-2 mb-2">
             {bookingData?.details.map((detail) => (
-              <div className="flex justify-between">
+              <div className="flex justify-between" key={`Payment - ${detail.treatment_id} - ${detail.therapist_id}`}>
                 <span className="text-gray-600">
                   {detail.treatment_name} ({detail.treatment_category})
                 </span>
@@ -95,7 +95,7 @@ const Customer = () => {
           </div>
           <div className="flex justify-between mb-2">
             {bookingData?.details.map((detail) => (
-              <div>
+              <div key={`Payment - ${detail.therapist_id} - ${detail.treatment_id}`}>
                 <span className="text-gray-600">{detail.therapist_name}</span>
                 <span className="font-semibold">IDR {detail.therapist_price}</span>
               </div>

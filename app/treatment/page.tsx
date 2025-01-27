@@ -11,7 +11,7 @@ const Treatment = () => {
   const [selectedTreatments, setSelectedTreatments] = useState<{ [key: number]: number }>({});
   const [treatments, setTreatments] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const { addDetail, location_id } = useBooking();
+  const { addDetail, location_id, setBookingData } = useBooking();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
 
@@ -36,7 +36,8 @@ const Treatment = () => {
   };
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    setBookingData({ details: [] });
+    const fetchTreatments = async () => {
       try {
         setIsLoading(true);
         console.log(location_id);
@@ -51,7 +52,7 @@ const Treatment = () => {
       }
     };
 
-    fetchLocations();
+    fetchTreatments();
   }, []);
 
   return (
