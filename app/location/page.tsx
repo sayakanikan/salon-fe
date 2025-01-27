@@ -1,14 +1,15 @@
 'use client'
-import { BiArrowBack } from "react-icons/bi";
-import { FaMapMarkerAlt } from "react-icons/fa";
-import { FaBookmark } from "react-icons/fa6";
-import { HiArrowRight } from "react-icons/hi2";
-import React, { useState } from 'react';
 import Link from "next/link";
-import { FiChevronLeft } from "react-icons/fi";
+import React, { useState } from 'react';
+import { redirect } from "next/navigation";
+import { FaBookmark } from "react-icons/fa6";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { useBooking } from "../context/BookingContext";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const Location = () => {
-  const [selectedLocation, setSelectedLocation] = useState<Number>()
+  const [selectedLocation, setSelectedLocation] = useState<number>()
+  const { setBookingData } = useBooking();
 
   const locations = [
     { id: 1, name: "Majapahit - Semarang", address: "Jl. Majapahit Raya No.12, Blok 10..." },
@@ -17,14 +18,16 @@ const Location = () => {
     { id: 4, name: "Pleburan - Semarang", address: "Jl. Pleburan Raya No.12, Blok 10..." }
   ];
 
-  const handleSelectLocation = (id:Number) => {
+  const handleSelectLocation = (id:number) => {
     setSelectedLocation(id);
+    setBookingData({ location_id: id });
   };
 
   const handleSubmit = () => {
     if (selectedLocation) {
       console.log("Selected Location ID:", selectedLocation);
       alert(`Location ID ${selectedLocation} submitted successfully!`);
+      redirect('/treatment');
     } else {
       alert("Please select a location before submitting.");
     }
@@ -80,25 +83,18 @@ const Location = () => {
           ))}
         </div>
 
-        {/* Buttons */}
         <div className="mt-5 flex justify-between">
-          <Link href="/" className="flex items-center px-6 py-2 border rounded-lg text-yellow-600 border-yellow-600">
-            <FiChevronLeft className="mr-2" />
+          <Link href="/" className="flex items-center py-2 rounded-lg text-yellow-600 hover:text-yellow-600/90">
+            <FiChevronLeft />
             Back
           </Link>
-          <Link 
-            href="/treatment"
-            className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg"
-          >
-            Select
-          </Link>
-          {/* <button
+          <button
             onClick={handleSubmit}
             className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg"
           >
             Select
             <FiChevronRight className="ml-2" />
-          </button> */}
+          </button>
         </div>
       </div>
     </>

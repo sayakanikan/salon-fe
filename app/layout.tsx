@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { BookingProvider } from "./context/BookingContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +29,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="bg-white w-full h-svh rounded-lg shadow-xl p-5 text-black">
-          {children}
+          <BookingProvider>
+            {children}
+          </BookingProvider>
         </div>
 
-        <footer className="absolute bottom-0 bg-white text-black w-full rounded-lg text-center p-2 font-medium">Crafted with ❤️ by Irfansyah</footer>
+        <footer className="absolute bottom-0 bg-white text-black w-full rounded-lg text-center p-2 font-medium text-sm">Copyright &copy; 2025 <span className="text-yellow-600">Salon Booking Online</span></footer>
       </body>
     </html>
   );

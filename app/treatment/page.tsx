@@ -1,12 +1,14 @@
 "use client";
-import { BiArrowBack } from "react-icons/bi";
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FiChevronLeft } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useBooking } from "../context/BookingContext";
+import { redirect } from "next/navigation";
 
 const Treatment = () => {
   const [selectedTreatments, setSelectedTreatments] = useState<{ [key: number]: number }>({});
+  const { addDetail } = useBooking();
 
   const categories = [
     { id: 1, name: "Haircut" },
@@ -28,16 +30,17 @@ const Treatment = () => {
       ...prev,
       [categoryId]: treatmentId,
     }));
+
+    addDetail({ treatment_id: treatmentId, therapist_id: 0 });
   };
 
   const handleSubmit = () => {
-    const allCategoriesSelected = categories.every((category) => selectedTreatments[category.id]);
-
-    if (allCategoriesSelected) {
+    if (selectedTreatments[1] != null) {
       console.log("Selected Treatments:", selectedTreatments);
       alert(`Selected Treatments: ${JSON.stringify(selectedTreatments)}`);
+      redirect('/date');
     } else {
-      alert("Please select a treatment for each category before submitting.");
+      alert("Please select at least one treatment before submitting.");
     }
   };
 
@@ -73,20 +76,17 @@ const Treatment = () => {
 
         {/* Buttons */}
         <div className="mt-5 flex justify-between">
-          <Link href="/location" className="flex items-center px-6 py-2 border rounded-lg text-yellow-600 border-yellow-600">
-            <FiChevronLeft className="mr-2" />
+          <Link href="/location" className="flex items-center py-2 rounded-lg text-yellow-600 hover:text-yellow-600/90">
+            <FiChevronLeft />
             Back
           </Link>
-          <Link href="/date" className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg">
-            Select
-          </Link>
-          {/* <button
+          <button
             onClick={handleSubmit}
             className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg"
           >
             Select
-            <FiChevronRight className="ml-2" />
-          </button> */}
+            <FiChevronRight />
+          </button>
         </div>
       </div>
     </>

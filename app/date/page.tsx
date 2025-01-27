@@ -1,15 +1,31 @@
 "use client";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import React, { useState } from "react";
-import Calendar from "react-calendar";
+import { redirect } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import { FiCalendar, FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
+const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
+
 const DatePicker: React.FC = () => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   const timeSlots = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
+
+  useEffect(() => {
+    setDate(new Date());
+  }, []);
+
+  const handleSubmit = () => {
+    if (!date || !selectedTime) {
+      alert("Please select a date and time.");
+      return;
+    }
+    alert(`Appointment set for ${date.toLocaleDateString("id-ID")} at ${selectedTime}`);
+    redirect('/therapist');
+  };
 
   return (
     <>
@@ -23,7 +39,15 @@ const DatePicker: React.FC = () => {
             <span className="text-sm font-medium">Set Appointment</span>
             <FiCalendar size={20} />
           </div>
-          <Calendar className="rounded-xl p-3" onChange={setDate} value={date} tileDisabled={({ date }) => date < new Date(new Date().setHours(0, 0, 0, 0))} />
+          {date && (
+            <Calendar
+              className="rounded-xl p-3"
+              onChange={setDate}
+              value={date}
+              tileDisabled={({ date }) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+              locale="id" // Tetapkan locale Indonesia untuk konsistensi
+            />
+          )}
           <div className="mt-4">
             <h2 className="text-md font-medium mb-2">Slot Available</h2>
             <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-40">
@@ -39,8 +63,8 @@ const DatePicker: React.FC = () => {
               <FiChevronLeft />
               Back
             </Link>
-            <button className="flex items-center bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-600/70">
-              Next
+            <button onClick={handleSubmit} className="flex items-center bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-600/70">
+              Select
               <FiChevronRight />
             </button>
           </div>

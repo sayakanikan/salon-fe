@@ -4,10 +4,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
-import { FiChevronLeft } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useBooking } from "../context/BookingContext";
+import { redirect } from "next/navigation";
 
 const Therapist = () => {
   const [selectedTherapists, setSelectedTherapists] = useState<{ [key: number]: number }>({});
+  const { details } = useBooking();
 
   const categories = [
     { id: 1, name: "Haircut" },
@@ -37,6 +40,7 @@ const Therapist = () => {
     if (allCategoriesSelected) {
       console.log("Selected Therapists:", selectedTherapists);
       alert(`Selected Therapists: ${JSON.stringify(selectedTherapists)}`);
+      redirect('/customer');
     } else {
       alert("Please select a therapist for each category before submitting.");
     }
@@ -69,8 +73,8 @@ const Therapist = () => {
                           <p className="text-sm text-start group-hover:text-white">Fee: IDR {therapist.price.toLocaleString()}</p>
                         </div>
 
-                        <div className="bg-white rounded-md shadow-lg px-4 text-sm flex gap-2 items-center">
-                          <FaStar /> 5.0 (87)
+                        <div className="bg-white rounded-md shadow-lg px-4 text-sm flex gap-2 items-center text-black">
+                          <FaStar className="text-yellow-600"/> 5.0 (87)
                         </div>
                       </div>
                     </div>
@@ -82,20 +86,17 @@ const Therapist = () => {
 
         {/* Buttons */}
         <div className="mt-5 flex justify-between">
-          <Link href="/date" className="flex items-center px-6 py-2 border rounded-lg text-yellow-600 border-yellow-600">
-            <FiChevronLeft className="mr-2" />
+          <Link href="/date" className="flex items-center py-2 rounded-lg text-yellow-600 hover:text-yellow-600/90">
+            <FiChevronLeft />
             Back
           </Link>
-          <Link href="/customer" className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg">
-            Select
-          </Link>
-          {/* <button
+          <button
             onClick={handleSubmit}
             className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg"
           >
             Select
-            <FiChevronRight className="ml-2" />
-          </button> */}
+            <FiChevronRight />
+          </button>
         </div>
       </div>
     </>

@@ -1,5 +1,3 @@
-import { createContext, useContext, useState } from "react";
-
 interface BookingDetail {
   treatment_id: number;
   therapist_id: number;
