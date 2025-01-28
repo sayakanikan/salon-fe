@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 interface BookingContextProps extends BookingRequest {
   setBookingData: (data: Partial<BookingRequest>) => void;
   addDetail: (detail: BookingDetail) => void;
+  setDetails: (details: BookingDetail[]) => void;
 }
 
 const BookingContext = createContext<BookingContextProps | undefined>(undefined);
@@ -31,8 +32,15 @@ const BookingProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const setDetails = (details: BookingDetail[]) => {
+    setBookingDataState((prev) => ({
+      ...prev,
+      details,
+    }));
+  };
+
   return (
-    <BookingContext.Provider value={{ ...bookingData, setBookingData, addDetail }}>
+    <BookingContext.Provider value={{ ...bookingData, setBookingData, addDetail, setDetails }}>
       {children}
     </BookingContext.Provider>
   );

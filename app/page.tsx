@@ -1,7 +1,32 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    router.push("/login");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const tokenCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="));
+
+    if (token && tokenCookie) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
     <>
       <div className="text-center mt-5">
@@ -14,7 +39,16 @@ export default function Home() {
           Hello <span className="font-bold">There,</span>
         </h1>
         <p className="text-white mt-2 mb-7">Let's take care of your beauty</p>
-        <Link href='/location' className="bg-white text-yellow-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100">Book Now</Link>
+        <div className="flex justify-between">
+          <Link href="/location" className="bg-white text-yellow-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100">
+            Book Now
+          </Link>
+          {isAuthenticated && (
+            <button onClick={handleLogout} className="bg-white border-red-500 border-2 text-red-500 font-bold py-2 px-6 rounded-lg hover:bg-red-600 hover:text-white hover:border-red-600">
+              Logout
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Static Feed Section */}

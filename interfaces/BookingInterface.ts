@@ -1,5 +1,6 @@
 interface BookingDetail {
   treatment_id: number;
+  treatment_name: string;
   therapist_id: number;
 }
 

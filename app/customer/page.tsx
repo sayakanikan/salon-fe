@@ -1,15 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { BiArrowBack } from "react-icons/bi";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useBooking } from "../context/BookingContext";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axiosInstance from "@/api/axiosInstance";
 
 const Customer = () => {
   const router = useRouter();
-  const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customerData, setCustomerData] = useState({
     name: "",
@@ -39,6 +37,7 @@ const Customer = () => {
     
     try {
       setIsSubmitting(true);
+      console.log("Data detail yang dikirim: " + details)
       const response = await axiosInstance.post("/appointments/save-booking", {
         location_id,
         name,
@@ -115,8 +114,8 @@ const Customer = () => {
                 <FiChevronLeft />
                 Back
               </Link>
-              <button type="submit" className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg">
-                Submit Booking
+              <button type="submit" className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg" disabled={isSubmitting}>
+                {isSubmitting ? "Processing..." : "Submit Booking"}
                 <FiChevronRight />
               </button>
             </div>

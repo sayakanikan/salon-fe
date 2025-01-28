@@ -100,7 +100,7 @@ const Location = () => {
             Back
           </Link>
           <button onClick={handleSubmit} className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg" disabled={isLoadingButton}>
-            Select
+            {isLoadingButton ? "Processing..." : "Select"}
             <FiChevronRight className="ml-2" />
           </button>
         </div>

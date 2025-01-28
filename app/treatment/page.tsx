@@ -21,7 +21,7 @@ const Treatment = () => {
       [categoryId]: treatmentId,
     }));
 
-    addDetail({ treatment_id: treatmentId, therapist_id: 0 });
+    addDetail({ treatment_id: treatmentId, treatment_name: "", therapist_id: 0 });
   };
 
   const handleSubmit = () => {
@@ -109,7 +109,7 @@ const Treatment = () => {
             Back
           </Link>
           <button onClick={handleSubmit} className="flex items-center px-6 py-2 bg-yellow-600 text-white rounded-lg" disabled={isLoadingButton}>
-            Select
+            {isLoadingButton ? "Processing..." : "Select"}
             <FiChevronRight />
           </button>
         </div>

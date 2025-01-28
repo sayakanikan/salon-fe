@@ -54,7 +54,7 @@ const Customer = () => {
             <span className="text-gray-600">Treatment</span>
             <div className="flex flex-col">
               {bookingData?.details.map((detail) => (
-                <span className="font-semibold" key={`${detail.treatment_id} - ${detail.therapist_id}`}>
+                <span className="font-semibold text-right" key={`${detail.treatment_id} - ${detail.therapist_id}`}>
                   {detail.treatment_name} ({detail.treatment_category})
                 </span>
               ))}
@@ -64,7 +64,7 @@ const Customer = () => {
             <span className="text-gray-600">Therapist</span>
             <div className="flex flex-col">
               {bookingData?.details.map((detail) => (
-                <span className="font-semibold" key={`${detail.therapist_id} - ${detail.treatment_id}`}>
+                <span className="font-semibold text-right" key={`${detail.therapist_id} - ${detail.treatment_id}`}>
                   {detail.therapist_name} ({detail.treatment_category})
                 </span>
               ))}
@@ -89,22 +89,22 @@ const Customer = () => {
                 <span className="text-gray-600">
                   {detail.treatment_name} ({detail.treatment_category})
                 </span>
-                <span className="font-semibold">IDR {detail.treatment_price}</span>
+                <span className="font-semibold text-right">Rp {detail.treatment_price.toLocaleString()}</span>
               </div>
             ))}
           </div>
-          <div className="flex justify-between mb-2">
+          <div className="mb-2">
             {bookingData?.details.map((detail) => (
-              <div key={`Payment - ${detail.therapist_id} - ${detail.treatment_id}`}>
+              <div key={`Payment - ${detail.therapist_id} - ${detail.treatment_id}`} className="flex flex-row justify-between">
                 <span className="text-gray-600">{detail.therapist_name}</span>
-                <span className="font-semibold">IDR {detail.therapist_price}</span>
+                <span className="font-semibold text-right">Rp {detail.therapist_price.toLocaleString()}</span>
               </div>
             ))}
           </div>
           <hr className="my-2" />
           <div className="flex justify-between">
             <span className="font-bold">Total</span>
-            <span className="font-bold text-yellow-600">Rp. {bookingData?.total_price}</span>
+            <span className="font-bold text-yellow-600">Rp {bookingData?.total_price.toLocaleString()}</span>
           </div>
         </div>
 

@@ -33,9 +33,13 @@ const DatePicker: React.FC = () => {
       return;
     }
 
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
+
     const requestData = {
       location_id: location_id,
-      date: date.toISOString().split('T')[0],
+      date: formattedDate,
       time: selectedTime
     };
     console.log(requestData);
@@ -44,7 +48,7 @@ const DatePicker: React.FC = () => {
       const response = await axiosInstance.post('/appointments/check-slots', requestData);
   
       if (response.data.data == true) {
-        setBookingData({ date: date.toISOString().split('T')[0], time: selectedTime });
+        setBookingData({ date: formattedDate, time: selectedTime });
         router.push('/therapist');
       } else {
         alert(response.data.message || "Time slot is not available");
@@ -74,7 +78,7 @@ const DatePicker: React.FC = () => {
               onChange={setDate}
               value={date}
               tileDisabled={({ date }) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-              locale="id" // Tetapkan locale Indonesia untuk konsistensi
+              locale="id"
             />
           )}
           <div className="mt-4">
@@ -93,7 +97,7 @@ const DatePicker: React.FC = () => {
               Back
             </Link>
             <button onClick={handleSubmit} className="flex items-center bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-600/70" disabled={isLoadingButton}>
-              Select
+              {isLoadingButton ? "Processing..." : "Select"}
               <FiChevronRight />
             </button>
           </div>
